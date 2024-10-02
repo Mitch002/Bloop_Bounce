@@ -126,36 +126,32 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = 150;  // Fixed gap height to ensure Bloop can fit through
-    const obstacleX = 500;  // Start point for new obstacles
-    const maxObstacleHeight = config.height - gapHeight - 100; // Ensuring there’s space for the gap and Bloop
+    const gapHeight = 150;  // Fixed gap size
+    const obstacleX = 500;  // Start position for new obstacles
 
-    // Randomize bottom obstacle height
-    const bottomObstacleHeight = Phaser.Math.Between(100, maxObstacleHeight);
+    // Random height for the bottom obstacle
+    const bottomObstacleHeight = Phaser.Math.Between(100, config.height - gapHeight - 100);  // Leave room for the gap
 
-    // Calculate top obstacle height
+    // Calculate the top obstacle height
     const topObstacleHeight = config.height - bottomObstacleHeight - gapHeight;
 
-    // Create bottom obstacle (positioned at the bottom of the screen)
-    const bottomObstacle = obstacles.create(obstacleX, config.height - bottomObstacleHeight / 2, 'bottomObstacle')
-        .setDisplaySize(60, bottomObstacleHeight)  // Set obstacle size dynamically
-        .setOrigin(0.5, 1);  // Anchor at the bottom of the screen
-    bottomObstacle.body.allowGravity = false;
-    bottomObstacle.setVelocityX(-300);  // Obstacle speed
+    // Create the bottom obstacle and position it at the bottom of the screen
+    const bottomObstacle = obstacles.create(obstacleX, config.height - bottomObstacleHeight, 'bottomObstacle');
+    bottomObstacle.setDisplaySize(60, bottomObstacleHeight);  // Set obstacle size dynamically
+    bottomObstacle.setVelocityX(-300);  // Move the obstacle leftward
 
-    // Create top obstacle (positioned at the top of the screen)
-    const topObstacle = obstacles.create(obstacleX, topObstacleHeight / 2, 'topObstacle')
-        .setDisplaySize(60, topObstacleHeight)  // Set obstacle size dynamically
-        .setOrigin(0.5, 0);  // Anchor at the top of the screen
-    topObstacle.body.allowGravity = false;
-    topObstacle.setVelocityX(-300);  // Obstacle speed
+    // Create the top obstacle and position it at the top of the screen
+    const topObstacle = obstacles.create(obstacleX, 0, 'topObstacle');
+    topObstacle.setDisplaySize(60, topObstacleHeight);  // Set obstacle size dynamically
+    topObstacle.setVelocityX(-300);  // Move the obstacle leftward
 
-    // Destroy obstacles after they leave the screen
+    // Ensure the obstacles are destroyed when they leave the screen
     topObstacle.checkWorldBounds = true;
     topObstacle.outOfBoundsKill = true;
     bottomObstacle.checkWorldBounds = true;
     bottomObstacle.outOfBoundsKill = true;
 }
+
 
 
 
