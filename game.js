@@ -126,15 +126,14 @@ function update() {
 }
 
 function addObstacles() {
-    const bloopHeight = bloop.height * 0.8;  // Bloop's actual height with adjusted collision box
-    const minimumGapHeight = bloopHeight + 50;  // Ensure the gap is always bigger than Bloop by 50 pixels
+    const gapHeight = 150;  // Fixed gap size
     const obstacleX = 500;  // Start position for new obstacles
 
-    // Random height for the bottom obstacle, ensuring enough space for the gap
-    const bottomObstacleHeight = Phaser.Math.Between(100, config.height - minimumGapHeight - 100);
+    // Random height for the bottom obstacle
+    const bottomObstacleHeight = Phaser.Math.Between(100, config.height - gapHeight - 100);  // Leave room for the gap
 
-    // Calculate top obstacle height
-    const topObstacleHeight = config.height - bottomObstacleHeight - minimumGapHeight;
+    // Calculate the top obstacle height
+    const topObstacleHeight = config.height - bottomObstacleHeight - gapHeight;
 
     // Create the bottom obstacle and position it at the bottom of the screen
     const bottomObstacle = obstacles.create(obstacleX, config.height - bottomObstacleHeight, 'bottomObstacle');
@@ -156,7 +155,6 @@ function addObstacles() {
     bottomObstacle.checkWorldBounds = true;
     bottomObstacle.outOfBoundsKill = true;
 }
-
 
 
 
