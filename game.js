@@ -6,8 +6,8 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 800 }, // Increase gravity for more difficulty
-            debug: false  // Turn off debug mode to remove purple boxes and green lines
+            gravity: { y: 800 }, // Increased gravity for more difficulty
+            debug: false  // Turn off debug mode to remove debugging visuals
         }
     },
     scene: {
@@ -27,6 +27,7 @@ let scoreText;
 let gameOver = false;
 let restartText;
 let gameOverText, finalScoreText;
+let gameOverBox;
 
 function preload() {
     // Load images with correct paths
@@ -57,7 +58,7 @@ function create() {
 
     // Add obstacle generation loop
     this.time.addEvent({
-        delay: 1000,  // Adjusted delay for obstacle creation to make the game harder
+        delay: 1000,  // Adjusted delay for obstacle creation
         callback: addObstacles,
         callbackScope: this,
         loop: true
@@ -66,12 +67,23 @@ function create() {
     // Check for collision
     this.physics.add.collider(bloop, obstacles, hitObstacle, null, this);
 
+    // Add game over box for better visibility
+    gameOverBox = this.add.graphics();
+    gameOverBox.fillStyle(0xffffff, 0.8);  // White background with some transparency
+    gameOverBox.fillRect(100, 200, 300, 200);  // Positioned to cover Game Over text and restart button
+    gameOverBox.visible = false;  // Initially hidden
+
     // Game Over text placeholders (hidden initially)
-    gameOverText = this.add.text(150, 250, '', { fontSize: '48px', fill: '#ff0000' });
-    finalScoreText = this.add.text(170, 300, '', { fontSize: '32px', fill: '#000' });
+    gameOverText = this.add.text(250, 220, 'Game Over', { fontSize: '48px', fill: '#ff0000' });
+    gameOverText.setOrigin(0.5);
+    gameOverText.visible = false;  // Initially hidden
+
+    finalScoreText = this.add.text(250, 270, '', { fontSize: '32px', fill: '#000' });
+    finalScoreText.setOrigin(0.5);
+    finalScoreText.visible = false;  // Initially hidden
 
     // Add restart text (hidden initially)
-    restartText = this.add.text(250, 350, 'Click to Restart', { fontSize: '32px', fill: '#000' });
+    restartText = this.add.text(250, 320, 'Click to Restart', { fontSize: '32px', fill: '#000' });
     restartText.setOrigin(0.5);  // Center the text
     restartText.setInteractive();  // Make the text interactive (clickable)
     restartText.visible = false;  // Initially hidden
@@ -90,6 +102,11 @@ function update() {
         bloop.setVelocityY(-300);  // Jump power (adjust as needed)
     }
 
+    // Game over if Bloop hits the top or bottom of the screen
+    if (bloop.y <= 0 || bloop.y >= config.height) {
+        hitObstacle();
+    }
+
     // Increment score when passing obstacles
     obstacles.getChildren().forEach(function (obstacle) {
         if (obstacle.x < bloop.x && !obstacle.scored) {
@@ -101,7 +118,7 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = Phaser.Math.Between(150, 200);  // Smaller gap to make the game harder
+    const gapHeight = Phaser.Math.Between(150, 200);  // Smaller gap for more difficulty
     const obstacleX = 500;  // Start point for new obstacles
     const obstacleGapY = Phaser.Math.Between(150, 450);  // Random vertical position for the gap
 
@@ -109,10 +126,10 @@ function addObstacles() {
     const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight, 'topObstacle').setScale(0.4);  // Smaller scale
     topObstacle.setOrigin(0, 1);  // Flip top obstacle
     topObstacle.body.allowGravity = false;
-    topObstacle.setVelocityX(-300);  // Faster obstacle speed to increase difficulty
+    topObstacle.setVelocityX(-300);  // Faster obstacle speed
 
-    // Bottom obstacle
-    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight, 'bottomObstacle').setScale(0.4);  // Smaller scale
+    // Bottom obstacle (increased size)
+    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight, 'bottomObstacle').setScale(0.5);  // Slightly larger scale
     bottomObstacle.body.allowGravity = false;
     bottomObstacle.setVelocityX(-300);  // Faster obstacle speed
 
@@ -129,10 +146,13 @@ function hitObstacle() {
     gameOver = true;  // End game
 
     // Display Game Over Text and Restart Button
+    gameOverBox.visible = true;
     gameOverText.setText('Game Over');
-    finalScoreText.setText('Score: ' + score);
+    gameOverText.visible = true;
 
-    // Show the restart button
+    finalScoreText.setText('Score: ' + score);
+    finalScoreText.visible = true;
+
     restartText.visible = true;
 }
 
@@ -149,7 +169,10 @@ function restartGame() {
     // Clear tint from Bloop
     bloop.clearTint();
 
-    // Hide restart button
+    // Hide game over box and restart button
+    gameOverBox.visible = false;
+    gameOverText.visible = false;
+    finalScoreText.visible = false;
     restartText.visible = false;
 
     // Restart the scene
