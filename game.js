@@ -28,6 +28,7 @@ let gameOver = false;
 let restartText;
 let gameOverText, finalScoreText;
 let gameOverBox;
+let obstacleEvent;
 
 function preload() {
     // Load images with correct paths
@@ -62,7 +63,7 @@ function setupGame(scene) {
     scoreText = scene.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 
     // Add obstacle generation loop
-    scene.time.addEvent({
+    obstacleEvent = scene.time.addEvent({
         delay: 1500,  // Delay for obstacle creation
         callback: addObstacles,
         callbackScope: scene,
@@ -175,6 +176,11 @@ function resetGame(scene) {
     finalScoreText.destroy();
     restartText.destroy();
     gameOverBox.destroy();
+
+    // Remove existing obstacle event
+    if (obstacleEvent) {
+        obstacleEvent.remove(false);  // Remove the existing obstacle event
+    }
 
     // Reset score and game variables
     score = 0;
