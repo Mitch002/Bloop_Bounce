@@ -7,7 +7,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 800 }, // Gravity for Bloop
-            debug: false  // Turn off debug mode
+            debug: true  // Enable debug mode to visualize hitboxes
         }
     },
     scene: {
@@ -47,7 +47,7 @@ function setupGame(scene) {
     // Add background
     scene.add.image(250, 300, 'background');  // Background image
 
-    // Create Bloop with smaller collision box
+    // Create Bloop with adjusted collision box
     bloop = scene.physics.add.sprite(100, 300, 'bloop').setScale(0.1);
     bloop.setCollideWorldBounds(true);  // Bloop won't go off-screen
     bloop.body.setSize(bloop.width * 0.6, bloop.height * 0.6);  // Adjust collision box size for Bloop
@@ -126,7 +126,7 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = 150;  // Fixed gap size
+    const gapHeight = 200;  // Fixed gap size (larger to ensure Bloop can pass through)
     const obstacleX = 500;  // Start position for new obstacles
 
     // Random height for the bottom obstacle
