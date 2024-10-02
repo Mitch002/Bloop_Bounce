@@ -6,7 +6,7 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 500 }, // Gravity for Bloop
+            gravity: { y: 600 }, // Increase gravity for faster gameplay
             debug: false
         }
     },
@@ -25,6 +25,7 @@ let obstacles;
 let score = 0;
 let scoreText;
 let gameOver = false;
+let restartButton;
 let topObstacleImg, bottomObstacleImg;
 
 function preload() {
@@ -33,7 +34,7 @@ function preload() {
     this.load.image('bloop', 'assets/bloop_rocket.png');
     this.load.image('topObstacle', 'assets/redcandle.png');
     this.load.image('bottomObstacle', 'assets/greencandle.png');
-
+    this.load.image('restartButton', 'assets/restart_button.png'); // Placeholder, create or load a restart button
 }
 
 function create() {
@@ -53,9 +54,9 @@ function create() {
     // Display score
     scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 
-    // Add obstacle generation loop
+    // Add obstacle generation loop (decrease delay for faster pace)
     this.time.addEvent({
-        delay: 1500,
+        delay: 1000,  // Reduced delay for faster gameplay
         callback: addObstacles,
         callbackScope: this,
         loop: true
@@ -63,6 +64,11 @@ function create() {
 
     // Check for collision
     this.physics.add.collider(bloop, obstacles, hitObstacle, null, this);
+
+    // Game Over Restart Button (hidden initially)
+    restartButton = this.add.image(250, 300, 'restartButton').setInteractive();
+    restartButton.visible = false;
+    restartButton.on('pointerdown', () => restartGame());
 }
 
 function update() {
@@ -72,7 +78,7 @@ function update() {
 
     // Jump when space is pressed or mouse is clicked
     if (cursors.space.isDown || this.input.activePointer.isDown) {
-        bloop.setVelocityY(-250);  // Jump power
+        bloop.setVelocityY(-300);  // Increase jump power for faster gameplay
     }
 
     // Increment score when passing obstacles
@@ -86,7 +92,7 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = Phaser.Math.Between(100, 250);  // Random gap size
+    const gapHeight = Phaser.Math.Between(100, 200);  // Random gap size (adjusted for faster pace)
     const obstacleX = 500;  // Start point for new obstacles
     const obstacleGapY = Phaser.Math.Between(150, 450);  // Random gap position
 
@@ -94,12 +100,12 @@ function addObstacles() {
     const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight, 'topObstacle');
     topObstacle.setOrigin(0, 1);  // Flip top obstacle
     topObstacle.body.allowGravity = false;
-    topObstacle.setVelocityX(-200);  // Obstacle moves left
+    topObstacle.setVelocityX(-250);  // Increased obstacle speed
 
     // Bottom obstacle
     const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight, 'bottomObstacle');
     bottomObstacle.body.allowGravity = false;
-    bottomObstacle.setVelocityX(-200);  // Obstacle moves left
+    bottomObstacle.setVelocityX(-250);  // Increased obstacle speed
 
     // Destroy obstacles after they leave the screen
     topObstacle.checkWorldBounds = true;
@@ -112,4 +118,20 @@ function hitObstacle() {
     this.physics.pause();  // Stop the game
     bloop.setTint(0xff0000);  // Set red tint on collision
     gameOver = true;  // End game
+
+    // Display Game Over Text and Restart Button
+    let gameOverText = this.add.text(150, 250, 'Game Over', { fontSize: '48px', fill: '#ff0000' });
+    let finalScoreText = this.add.text(170, 300, 'Score: ' + score, { fontSize: '32px', fill: '#000' });
+
+    // Show the restart button
+    restartButton.visible = true;
+}
+
+// Function to restart the game
+function restartGame() {
+    score = 0;
+    gameOver = false;
+    scoreText.setText('Score: 0');
+    bloop.clearTint();
+    this.scene.restart();  // Reset the scene
 }
