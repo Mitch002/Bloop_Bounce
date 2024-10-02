@@ -33,6 +33,7 @@ function preload() {
     this.load.image('bloop', 'assets/bloop_rocket.png');
     this.load.image('topObstacle', 'assets/redcandle.png');
     this.load.image('bottomObstacle', 'assets/greencandle.png');
+
 }
 
 function create() {
