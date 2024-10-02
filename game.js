@@ -38,58 +38,65 @@ function preload() {
 }
 
 function create() {
+    // Start the game setup
+    setupGame(this);
+}
+
+function setupGame(scene) {
     // Add background
-    this.add.image(250, 300, 'background');  // Background image
+    scene.add.image(250, 300, 'background');  // Background image
 
     // Create Bloop (Adjusted scale and size for collision)
-    bloop = this.physics.add.sprite(100, 300, 'bloop').setScale(0.1);
+    bloop = scene.physics.add.sprite(100, 300, 'bloop').setScale(0.1);
     bloop.setCollideWorldBounds(true);  // Bloop won't go off-screen
     bloop.body.setSize(bloop.width * 0.6, bloop.height * 0.8);  // Adjust collision box size for Bloop
     bloop.body.setOffset(10, 10);  // Fine-tune the offset
 
     // Create obstacles group
-    obstacles = this.physics.add.group();
+    obstacles = scene.physics.add.group();
 
     // Add keyboard input for jump
-    cursors = this.input.keyboard.createCursorKeys();
+    cursors = scene.input.keyboard.createCursorKeys();
 
     // Display score
-    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = scene.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 
     // Add obstacle generation loop
-    this.time.addEvent({
+    scene.time.addEvent({
         delay: 1500,  // Delay for obstacle creation
         callback: addObstacles,
-        callbackScope: this,
+        callbackScope: scene,
         loop: true
     });
 
     // Check for collision
-    this.physics.add.collider(bloop, obstacles, hitObstacle, null, this);
+    scene.physics.add.collider(bloop, obstacles, hitObstacle, null, scene);
 
     // Add game over box for better visibility
-    gameOverBox = this.add.graphics();
+    gameOverBox = scene.add.graphics();
     gameOverBox.fillStyle(0xffffff, 0.8);  // White background with some transparency
     gameOverBox.fillRect(100, 200, 300, 200);  // Positioned to cover Game Over text and restart button
     gameOverBox.visible = false;  // Initially hidden
 
     // Game Over text placeholders (hidden initially)
-    gameOverText = this.add.text(250, 220, 'Game Over', { fontSize: '48px', fill: '#ff0000' });
+    gameOverText = scene.add.text(250, 220, 'Game Over', { fontSize: '48px', fill: '#ff0000' });
     gameOverText.setOrigin(0.5);
     gameOverText.visible = false;  // Initially hidden
 
-    finalScoreText = this.add.text(250, 270, '', { fontSize: '32px', fill: '#000' });
+    finalScoreText = scene.add.text(250, 270, '', { fontSize: '32px', fill: '#000' });
     finalScoreText.setOrigin(0.5);
     finalScoreText.visible = false;  // Initially hidden
 
     // Add restart text (hidden initially)
-    restartText = this.add.text(250, 320, 'Click to Restart', { fontSize: '32px', fill: '#000' });
+    restartText = scene.add.text(250, 320, 'Click to Restart', { fontSize: '32px', fill: '#000' });
     restartText.setOrigin(0.5);  // Center the text
     restartText.setInteractive();  // Make the text interactive (clickable)
     restartText.visible = false;  // Initially hidden
 
     // On click, restart the game
-    restartText.on('pointerdown', restartGame);
+    restartText.on('pointerdown', function () {
+        resetGame(scene);  // Call resetGame when restart is clicked
+    });
 }
 
 function update() {
@@ -159,32 +166,23 @@ function hitObstacle() {
     restartText.visible = true;
 }
 
-function restartGame() {
-    // Reset game variables
+function resetGame(scene) {
+    // Destroy existing game objects
+    bloop.destroy();
+    obstacles.clear(true, true);
+    scoreText.destroy();
+    gameOverText.destroy();
+    finalScoreText.destroy();
+    restartText.destroy();
+    gameOverBox.destroy();
+
+    // Reset score and game variables
     score = 0;
     gameOver = false;
 
-    // Clear all obstacles
-    obstacles.clear(true, true);
+    // Recreate the game elements
+    setupGame(scene);
 
-    // Reset display text
-    scoreText.setText('Score: 0');
-    gameOverText.setText('');
-    finalScoreText.setText('');
-
-    // Clear tint from Bloop
-    bloop.clearTint();
-
-    // Hide game over box and restart button
-    gameOverBox.visible = false;
-    gameOverText.visible = false;
-    finalScoreText.visible = false;
-    restartText.visible = false;
-
-    // Re-enable Bloop's physics and position it in the middle of the screen
-    bloop.setPosition(100, 300);
-    bloop.setVelocity(0, 0);
-
-    // Reset game flow and resume the game
-    this.physics.resume();
+    // Resume the game physics
+    scene.physics.resume();
 }
