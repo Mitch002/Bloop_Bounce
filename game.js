@@ -139,11 +139,15 @@ function addObstacles() {
     const bottomObstacle = obstacles.create(obstacleX, config.height - bottomObstacleHeight, 'bottomObstacle');
     bottomObstacle.setDisplaySize(60, bottomObstacleHeight);  // Set obstacle size dynamically
     bottomObstacle.setVelocityX(-300);  // Move the obstacle leftward
+    bottomObstacle.body.allowGravity = false;  // Ensure gravity does not affect the obstacle
+    bottomObstacle.body.immovable = true;  // Prevent movement by external forces
 
     // Create the top obstacle and position it at the top of the screen
     const topObstacle = obstacles.create(obstacleX, 0, 'topObstacle');
     topObstacle.setDisplaySize(60, topObstacleHeight);  // Set obstacle size dynamically
     topObstacle.setVelocityX(-300);  // Move the obstacle leftward
+    topObstacle.body.allowGravity = false;  // Ensure gravity does not affect the obstacle
+    topObstacle.body.immovable = true;  // Prevent movement by external forces
 
     // Ensure the obstacles are destroyed when they leave the screen
     topObstacle.checkWorldBounds = true;
@@ -151,6 +155,7 @@ function addObstacles() {
     bottomObstacle.checkWorldBounds = true;
     bottomObstacle.outOfBoundsKill = true;
 }
+
 
 
 
