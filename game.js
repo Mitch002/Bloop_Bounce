@@ -135,14 +135,14 @@ function addObstacles() {
     // Calculate top obstacle height
     const topObstacleHeight = config.height - bottomObstacleHeight - gapHeight;
 
-    // Create bottom obstacle
+    // Create bottom obstacle (positioned at the bottom of the screen)
     const bottomObstacle = obstacles.create(obstacleX, config.height - bottomObstacleHeight / 2, 'bottomObstacle')
         .setDisplaySize(60, bottomObstacleHeight)  // Set obstacle size dynamically
         .setOrigin(0.5, 1);  // Anchor at the bottom of the screen
     bottomObstacle.body.allowGravity = false;
     bottomObstacle.setVelocityX(-300);  // Obstacle speed
 
-    // Create top obstacle
+    // Create top obstacle (positioned at the top of the screen)
     const topObstacle = obstacles.create(obstacleX, topObstacleHeight / 2, 'topObstacle')
         .setDisplaySize(60, topObstacleHeight)  // Set obstacle size dynamically
         .setOrigin(0.5, 0);  // Anchor at the top of the screen
@@ -155,6 +155,7 @@ function addObstacles() {
     bottomObstacle.checkWorldBounds = true;
     bottomObstacle.outOfBoundsKill = true;
 }
+
 
 function hitObstacle() {
     this.physics.pause();  // Stop the game
