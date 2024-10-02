@@ -6,8 +6,8 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 600 }, // Gravity for Bloop
-            debug: true  // Enable debug mode to visualize the collision boxes
+            gravity: { y: 800 }, // Increase gravity for more difficulty
+            debug: false  // Turn off debug mode to remove purple boxes and green lines
         }
     },
     scene: {
@@ -25,7 +25,7 @@ let obstacles;
 let score = 0;
 let scoreText;
 let gameOver = false;
-let restartButton;
+let restartText;
 let gameOverText, finalScoreText;
 
 function preload() {
@@ -34,7 +34,6 @@ function preload() {
     this.load.image('bloop', 'assets/bloop_rocket.png');
     this.load.image('topObstacle', 'assets/redcandle.png');
     this.load.image('bottomObstacle', 'assets/greencandle.png');
-    this.load.image('restartButton', 'assets/restart_button.png'); // Placeholder for restart button
 }
 
 function create() {
@@ -44,8 +43,6 @@ function create() {
     // Create Bloop (Adjusted scale and size for collision)
     bloop = this.physics.add.sprite(100, 300, 'bloop').setScale(0.1);  // Adjust scale as needed
     bloop.setCollideWorldBounds(true);  // Bloop won't go off-screen
-
-    // Adjust Bloop's collision box to fit within the rocket
     bloop.body.setSize(bloop.width * 0.6, bloop.height * 0.8);  // Adjust collision box size for Bloop
     bloop.body.setOffset(10, 10);  // Fine-tune the offset to match the visual appearance
 
@@ -58,9 +55,9 @@ function create() {
     // Display score
     scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
 
-    // Add obstacle generation loop (reduce delay for faster gameplay)
+    // Add obstacle generation loop
     this.time.addEvent({
-        delay: 1200,  // Adjusted delay for obstacle creation
+        delay: 1000,  // Adjusted delay for obstacle creation to make the game harder
         callback: addObstacles,
         callbackScope: this,
         loop: true
@@ -69,14 +66,18 @@ function create() {
     // Check for collision
     this.physics.add.collider(bloop, obstacles, hitObstacle, null, this);
 
-    // Game Over Restart Button (hidden initially)
-    restartButton = this.add.image(250, 400, 'restartButton').setInteractive();
-    restartButton.visible = false;
-    restartButton.on('pointerdown', () => restartGame());
-
-    // Game over and final score text placeholders (hidden initially)
+    // Game Over text placeholders (hidden initially)
     gameOverText = this.add.text(150, 250, '', { fontSize: '48px', fill: '#ff0000' });
     finalScoreText = this.add.text(170, 300, '', { fontSize: '32px', fill: '#000' });
+
+    // Add restart text (hidden initially)
+    restartText = this.add.text(250, 350, 'Click to Restart', { fontSize: '32px', fill: '#000' });
+    restartText.setOrigin(0.5);  // Center the text
+    restartText.setInteractive();  // Make the text interactive (clickable)
+    restartText.visible = false;  // Initially hidden
+
+    // On click, restart the game
+    restartText.on('pointerdown', () => restartGame());
 }
 
 function update() {
@@ -100,22 +101,20 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = Phaser.Math.Between(180, 250);  // Larger gap size to allow Bloop to pass
+    const gapHeight = Phaser.Math.Between(150, 200);  // Smaller gap to make the game harder
     const obstacleX = 500;  // Start point for new obstacles
-    const obstacleGapY = Phaser.Math.Between(200, 400);  // Random vertical position for the gap
+    const obstacleGapY = Phaser.Math.Between(150, 450);  // Random vertical position for the gap
 
-    // Top obstacle (adjust scale and collision size)
-    const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight, 'topObstacle').setScale(0.4);  // Smaller scale for the obstacle
+    // Top obstacle
+    const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight, 'topObstacle').setScale(0.4);  // Smaller scale
     topObstacle.setOrigin(0, 1);  // Flip top obstacle
     topObstacle.body.allowGravity = false;
-    topObstacle.setVelocityX(-250);  // Increased speed for faster gameplay
-    topObstacle.body.setSize(topObstacle.width, topObstacle.height * 0.8);  // Adjust the collision box size
+    topObstacle.setVelocityX(-300);  // Faster obstacle speed to increase difficulty
 
-    // Bottom obstacle (adjust scale and collision size)
-    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight, 'bottomObstacle').setScale(0.4);  // Smaller scale for the obstacle
+    // Bottom obstacle
+    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight, 'bottomObstacle').setScale(0.4);  // Smaller scale
     bottomObstacle.body.allowGravity = false;
-    bottomObstacle.setVelocityX(-250);  // Increased speed for faster gameplay
-    bottomObstacle.body.setSize(bottomObstacle.width, bottomObstacle.height * 0.8);  // Adjust the collision box size
+    bottomObstacle.setVelocityX(-300);  // Faster obstacle speed
 
     // Destroy obstacles after they leave the screen
     topObstacle.checkWorldBounds = true;
@@ -134,7 +133,7 @@ function hitObstacle() {
     finalScoreText.setText('Score: ' + score);
 
     // Show the restart button
-    restartButton.visible = true;
+    restartText.visible = true;
 }
 
 function restartGame() {
@@ -151,7 +150,7 @@ function restartGame() {
     bloop.clearTint();
 
     // Hide restart button
-    restartButton.visible = false;
+    restartText.visible = false;
 
     // Restart the scene
     this.scene.restart();
