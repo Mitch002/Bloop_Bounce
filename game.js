@@ -122,14 +122,17 @@ function addObstacles() {
     const obstacleX = 500;  // Start point for new obstacles
     const obstacleGapY = Phaser.Math.Between(150, 400);  // Random vertical position for the gap
 
+    // Ensure both top and bottom obstacles have the same scale
+    const scale = 0.4;
+
     // Top obstacle
-    const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight / 2, 'topObstacle').setScale(0.4);
+    const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight / 2, 'topObstacle').setScale(scale);
     topObstacle.setOrigin(0, 1);  // Flip top obstacle
     topObstacle.body.allowGravity = false;
     topObstacle.setVelocityX(-300);  // Obstacle speed
 
     // Bottom obstacle
-    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight / 2, 'bottomObstacle').setScale(0.4);
+    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight / 2, 'bottomObstacle').setScale(scale);
     bottomObstacle.body.allowGravity = false;
     bottomObstacle.setVelocityX(-300);  // Obstacle speed
 
@@ -157,31 +160,6 @@ function hitObstacle() {
 }
 
 function restartGame() {
-    // Reset game variables
-    score = 0;
-    gameOver = false;
-
-    // Clear all obstacles
-    obstacles.clear(true, true);
-
-    // Reset display text
-    scoreText.setText('Score: 0');
-    gameOverText.setText('');
-    finalScoreText.setText('');
-
-    // Clear tint from Bloop
-    bloop.clearTint();
-
-    // Hide game over box and restart button
-    gameOverBox.visible = false;
-    gameOverText.visible = false;
-    finalScoreText.visible = false;
-    restartText.visible = false;
-
-    // Re-enable Bloop's physics and position it in the middle of the screen
-    bloop.setPosition(100, 300);
-    bloop.setVelocity(0, 0);
-
-    // Resume physics after resetting the game
-    this.physics.resume();
+    // Use Phaser's built-in scene restart method to fully reset the game
+    this.scene.restart();
 }
