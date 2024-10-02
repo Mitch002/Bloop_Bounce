@@ -126,11 +126,11 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = 150;  // Fixed gap height to ensure bloop can fit
+    const gapHeight = 150;  // Fixed gap height to ensure Bloop can fit
     const obstacleX = 500;  // Start point for new obstacles
 
     // Randomize bottom obstacle height
-    const bottomObstacleHeight = Phaser.Math.Between(100, 350);  // Random height for bottom obstacle
+    const bottomObstacleHeight = Phaser.Math.Between(100, config.height - gapHeight - 100);  // Random height for bottom obstacle
 
     // Calculate top obstacle height
     const topObstacleHeight = config.height - bottomObstacleHeight - gapHeight;
@@ -155,6 +155,7 @@ function addObstacles() {
     bottomObstacle.checkWorldBounds = true;
     bottomObstacle.outOfBoundsKill = true;
 }
+
 
 
 function hitObstacle() {
