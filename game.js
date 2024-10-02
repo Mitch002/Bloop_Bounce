@@ -41,6 +41,24 @@ function create() {
     // Add background
     this.add.image(250, 300, 'background');  // Background image
 
+    // Initialize game components
+    initializeGame();
+
+    // Add restart text (hidden initially)
+    restartText = this.add.text(250, 320, 'Click to Restart', { fontSize: '32px', fill: '#000' });
+    restartText.setOrigin(0.5);  // Center the text
+    restartText.setInteractive();  // Make the text interactive (clickable)
+    restartText.visible = false;  // Initially hidden
+
+    // On click, restart the game
+    restartText.on('pointerdown', restartGame);
+}
+
+function initializeGame() {
+    // Reset score and game variables
+    score = 0;
+    gameOver = false;
+
     // Create Bloop (Adjusted scale and size for collision)
     bloop = this.physics.add.sprite(100, 300, 'bloop').setScale(0.1);
     bloop.setCollideWorldBounds(true);  // Bloop won't go off-screen
@@ -81,15 +99,6 @@ function create() {
     finalScoreText = this.add.text(250, 270, '', { fontSize: '32px', fill: '#000' });
     finalScoreText.setOrigin(0.5);
     finalScoreText.visible = false;  // Initially hidden
-
-    // Add restart text (hidden initially)
-    restartText = this.add.text(250, 320, 'Click to Restart', { fontSize: '32px', fill: '#000' });
-    restartText.setOrigin(0.5);  // Center the text
-    restartText.setInteractive();  // Make the text interactive (clickable)
-    restartText.visible = false;  // Initially hidden
-
-    // On click, restart the game
-    restartText.on('pointerdown', () => restartGame());
 }
 
 function update() {
@@ -182,7 +191,7 @@ function restartGame() {
     bloop.setPosition(100, 300);
     bloop.setVelocity(0, 0);
 
-    // Restart the obstacle generation loop by resetting the delay timer
-    addObstacles();
+    // Restart the obstacle generation loop
+    initializeGame();  // Reinitialize the game components
     this.physics.resume();  // Resume the physics
 }
