@@ -126,11 +126,12 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = 150;  // Fixed gap height to ensure Bloop can fit
+    const gapHeight = 150;  // Fixed gap height to ensure Bloop can fit through
     const obstacleX = 500;  // Start point for new obstacles
+    const maxObstacleHeight = config.height - gapHeight - 100; // Ensuring there’s space for the gap and Bloop
 
     // Randomize bottom obstacle height
-    const bottomObstacleHeight = Phaser.Math.Between(100, config.height - gapHeight - 100);  // Random height for bottom obstacle
+    const bottomObstacleHeight = Phaser.Math.Between(100, maxObstacleHeight);
 
     // Calculate top obstacle height
     const topObstacleHeight = config.height - bottomObstacleHeight - gapHeight;
