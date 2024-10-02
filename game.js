@@ -161,7 +161,7 @@ function restartGame() {
     score = 0;
     gameOver = false;
 
-    // Clear all obstacles before restarting the game
+    // Clear all obstacles
     obstacles.clear(true, true);
 
     // Reset display text
@@ -179,9 +179,10 @@ function restartGame() {
     restartText.visible = false;
 
     // Re-enable Bloop's physics and position it in the middle of the screen
-    bloop.setVelocity(0, 0);
     bloop.setPosition(100, 300);
+    bloop.setVelocity(0, 0);
 
-    // Restart the scene
-    this.scene.restart();
+    // Restart the obstacle generation loop by resetting the delay timer
+    addObstacles();
+    this.physics.resume();  // Resume the physics
 }
