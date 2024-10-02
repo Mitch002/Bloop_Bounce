@@ -58,7 +58,7 @@ function create() {
 
     // Add obstacle generation loop
     this.time.addEvent({
-        delay: 1000,  // Adjusted delay for obstacle creation
+        delay: 1500,  // Adjusted delay for obstacle creation
         callback: addObstacles,
         callbackScope: this,
         loop: true
@@ -118,20 +118,20 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = Phaser.Math.Between(150, 200);  // Smaller gap for more difficulty
+    const gapHeight = 180;  // Fixed gap height to ensure bloop can fit
     const obstacleX = 500;  // Start point for new obstacles
-    const obstacleGapY = Phaser.Math.Between(150, 450);  // Random vertical position for the gap
+    const obstacleGapY = Phaser.Math.Between(150, 400);  // Random vertical position for the gap
 
     // Top obstacle
-    const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight, 'topObstacle').setScale(0.4);  // Smaller scale
+    const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight / 2, 'topObstacle').setScale(0.4);
     topObstacle.setOrigin(0, 1);  // Flip top obstacle
     topObstacle.body.allowGravity = false;
-    topObstacle.setVelocityX(-300);  // Faster obstacle speed
+    topObstacle.setVelocityX(-300);  // Obstacle speed
 
-    // Bottom obstacle (increased size)
-    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight, 'bottomObstacle').setScale(0.5);  // Slightly larger scale
+    // Bottom obstacle
+    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight / 2, 'bottomObstacle').setScale(0.4);
     bottomObstacle.body.allowGravity = false;
-    bottomObstacle.setVelocityX(-300);  // Faster obstacle speed
+    bottomObstacle.setVelocityX(-300);  // Obstacle speed
 
     // Destroy obstacles after they leave the screen
     topObstacle.checkWorldBounds = true;
@@ -182,6 +182,6 @@ function restartGame() {
     bloop.setPosition(100, 300);
     bloop.setVelocity(0, 0);
 
-    // Restart obstacle spawning and physics
-    this.physics.resume();  // Resume physics after resetting the game
+    // Resume physics after resetting the game
+    this.physics.resume();
 }
