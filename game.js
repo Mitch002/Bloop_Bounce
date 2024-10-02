@@ -7,7 +7,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 800 }, // Increased gravity for more difficulty
-            debug: false  // Turn off debug mode to remove debugging visuals
+            debug: false  // Turn off debug mode
         }
     },
     scene: {
@@ -42,10 +42,10 @@ function create() {
     this.add.image(250, 300, 'background');  // Background image
 
     // Create Bloop (Adjusted scale and size for collision)
-    bloop = this.physics.add.sprite(100, 300, 'bloop').setScale(0.1);  // Adjust scale as needed
+    bloop = this.physics.add.sprite(100, 300, 'bloop').setScale(0.1);
     bloop.setCollideWorldBounds(true);  // Bloop won't go off-screen
     bloop.body.setSize(bloop.width * 0.6, bloop.height * 0.8);  // Adjust collision box size for Bloop
-    bloop.body.setOffset(10, 10);  // Fine-tune the offset to match the visual appearance
+    bloop.body.setOffset(10, 10);  // Fine-tune the offset
 
     // Create obstacles group
     obstacles = this.physics.add.group();
@@ -99,7 +99,7 @@ function update() {
 
     // Jump when space is pressed or mouse is clicked
     if (cursors.space.isDown || this.input.activePointer.isDown) {
-        bloop.setVelocityY(-300);  // Jump power (adjust as needed)
+        bloop.setVelocityY(-300);  // Jump power
     }
 
     // Game over if Bloop hits the top or bottom of the screen
@@ -161,6 +161,9 @@ function restartGame() {
     score = 0;
     gameOver = false;
 
+    // Clear all obstacles before restarting the game
+    obstacles.clear(true, true);
+
     // Reset display text
     scoreText.setText('Score: 0');
     gameOverText.setText('');
@@ -174,6 +177,10 @@ function restartGame() {
     gameOverText.visible = false;
     finalScoreText.visible = false;
     restartText.visible = false;
+
+    // Re-enable Bloop's physics and position it in the middle of the screen
+    bloop.setVelocity(0, 0);
+    bloop.setPosition(100, 300);
 
     // Restart the scene
     this.scene.restart();
