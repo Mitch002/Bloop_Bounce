@@ -126,23 +126,28 @@ function update() {
 }
 
 function addObstacles() {
-    const gapHeight = 180;  // Fixed gap height to ensure bloop can fit
+    const gapHeight = 150;  // Fixed gap height to ensure bloop can fit
     const obstacleX = 500;  // Start point for new obstacles
-    const obstacleGapY = Phaser.Math.Between(150, 400);  // Random vertical position for the gap
 
-    // Set the same scale for both top and bottom obstacles
-    const obstacleScale = 0.4;
+    // Randomize bottom obstacle height
+    const bottomObstacleHeight = Phaser.Math.Between(100, 350);  // Random height for bottom obstacle
 
-    // Top obstacle
-    const topObstacle = obstacles.create(obstacleX, obstacleGapY - gapHeight / 2, 'topObstacle').setScale(obstacleScale);
-    topObstacle.setOrigin(0, 1);  // Flip top obstacle
-    topObstacle.body.allowGravity = false;
-    topObstacle.setVelocityX(-300);  // Obstacle speed
+    // Calculate top obstacle height
+    const topObstacleHeight = config.height - bottomObstacleHeight - gapHeight;
 
-    // Bottom obstacle
-    const bottomObstacle = obstacles.create(obstacleX, obstacleGapY + gapHeight / 2, 'bottomObstacle').setScale(obstacleScale);
+    // Create bottom obstacle
+    const bottomObstacle = obstacles.create(obstacleX, config.height - bottomObstacleHeight / 2, 'bottomObstacle')
+        .setDisplaySize(60, bottomObstacleHeight)  // Set obstacle size dynamically
+        .setOrigin(0.5, 1);  // Anchor at the bottom of the screen
     bottomObstacle.body.allowGravity = false;
     bottomObstacle.setVelocityX(-300);  // Obstacle speed
+
+    // Create top obstacle
+    const topObstacle = obstacles.create(obstacleX, topObstacleHeight / 2, 'topObstacle')
+        .setDisplaySize(60, topObstacleHeight)  // Set obstacle size dynamically
+        .setOrigin(0.5, 0);  // Anchor at the top of the screen
+    topObstacle.body.allowGravity = false;
+    topObstacle.setVelocityX(-300);  // Obstacle speed
 
     // Destroy obstacles after they leave the screen
     topObstacle.checkWorldBounds = true;
