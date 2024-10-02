@@ -28,11 +28,11 @@ let gameOver = false;
 let topObstacleImg, bottomObstacleImg;
 
 function preload() {
-    // Load images
-    this.load.image('background', 'BLOOP_Game/graphics/bloop_background.png');
-    this.load.image('bloop', 'BLOOP_Game/graphics/bloop_rocket.png');
-    this.load.image('topObstacle', 'BLOOP_Game/graphics/redcandle.png');
-    this.load.image('bottomObstacle', 'BLOOP_Game/graphics/greencandle.png');
+    // Load images with correct paths
+    this.load.image('background', 'assets/bloop_background.png');
+    this.load.image('bloop', 'assets/bloop_rocket.png');
+    this.load.image('topObstacle', 'assets/redcandle.png');
+    this.load.image('bottomObstacle', 'assets/greencandle.png');
 }
 
 function create() {
