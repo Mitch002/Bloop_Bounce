@@ -126,29 +126,28 @@ function update() {
 }
 
 function addObstacles() {
-    const bloopHeight = bloop.height * 0.8;  // Bloop's actual height with adjusted collision box
-    const minimumGapHeight = bloopHeight + 30;  // Ensure the gap is always bigger than Bloop by 30 pixels
+    const gapHeight = 150;  // Fixed gap size
     const obstacleX = 500;  // Start position for new obstacles
 
-    // Random height for the bottom obstacle, ensuring enough space for the gap
-    const bottomObstacleHeight = Phaser.Math.Between(100, config.height - minimumGapHeight - 100);
+    // Random height for the bottom obstacle
+    const bottomObstacleHeight = Phaser.Math.Between(100, config.height - gapHeight - 100);  // Leave room for the gap
 
-    // Calculate top obstacle height
-    const topObstacleHeight = config.height - bottomObstacleHeight - minimumGapHeight;
+    // Calculate the top obstacle height
+    const topObstacleHeight = config.height - bottomObstacleHeight - gapHeight;
 
     // Create the bottom obstacle and position it at the bottom of the screen
     const bottomObstacle = obstacles.create(obstacleX, config.height - bottomObstacleHeight, 'bottomObstacle');
     bottomObstacle.setDisplaySize(60, bottomObstacleHeight);  // Set obstacle size dynamically
     bottomObstacle.setVelocityX(-300);  // Move the obstacle leftward
-    bottomObstacle.body.allowGravity = false;
-    bottomObstacle.body.immovable = true;  // Prevent vertical movement
+    bottomObstacle.body.allowGravity = false;  // Ensure gravity does not affect the obstacle
+    bottomObstacle.body.immovable = true;  // Prevent movement by external forces
 
     // Create the top obstacle and position it at the top of the screen
     const topObstacle = obstacles.create(obstacleX, 0, 'topObstacle');
     topObstacle.setDisplaySize(60, topObstacleHeight);  // Set obstacle size dynamically
     topObstacle.setVelocityX(-300);  // Move the obstacle leftward
-    topObstacle.body.allowGravity = false;
-    topObstacle.body.immovable = true;  // Prevent vertical movement
+    topObstacle.body.allowGravity = false;  // Ensure gravity does not affect the obstacle
+    topObstacle.body.immovable = true;  // Prevent movement by external forces
 
     // Ensure the obstacles are destroyed when they leave the screen
     topObstacle.checkWorldBounds = true;
