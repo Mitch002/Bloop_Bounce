@@ -47,9 +47,11 @@ function setupGame(scene) {
     // Add background
     scene.add.image(250, 300, 'background');  // Background image
 
-    // Create Bloop
+    // Create Bloop with smaller collision box
     bloop = scene.physics.add.sprite(100, 300, 'bloop').setScale(0.1);
     bloop.setCollideWorldBounds(true);  // Bloop won't go off-screen
+    bloop.body.setSize(bloop.width * 0.6, bloop.height * 0.6);  // Adjust collision box size for Bloop
+    bloop.body.setOffset(10, 10);  // Fine-tune the offset
 
     // Create obstacles group
     obstacles = scene.physics.add.group();
